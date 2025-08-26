@@ -50,6 +50,16 @@ class Settings(BaseSettings):
     context_window_size: int = Field(10, env="CONTEXT_WINDOW_SIZE")
     auto_summarize_threshold: int = Field(50, env="AUTO_SUMMARIZE_THRESHOLD")
     cleanup_old_data_days: int = Field(30, env="CLEANUP_OLD_DATA_DAYS")
+    
+    # MCP Configuration
+    mcp_enabled: bool = Field(False, env="MCP_ENABLED")
+    mcp_servers_config: Optional[str] = Field(None, env="MCP_SERVERS_CONFIG")
+    mcp_sampling_enabled: bool = Field(True, env="MCP_SAMPLING_ENABLED")
+    
+    # Advanced Model Configuration
+    fallback_model_enabled: bool = Field(False, env="FALLBACK_MODEL_ENABLED")
+    enable_thinking: bool = Field(False, env="ENABLE_THINKING")  # For Google models with thinking capability
+    openai_api_key: Optional[str] = Field(None, env="OPENAI_API_KEY")  # For fallback model
 
     model_config = {
         "env_file": ".env",

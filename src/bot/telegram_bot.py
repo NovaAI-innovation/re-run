@@ -350,13 +350,16 @@ class TelegramBot:
             history_parts = ["📝 <b>Recent Conversation History</b>\n"]
             
             # Show last 10 messages maximum
-            recent_messages = [msg for msg in context_messages if msg.role.value != "system"][-10:]
+            recent_messages = [msg for msg in context_messages 
+                             if (msg.role.value if hasattr(msg.role, 'value') else str(msg.role)) != "system"][-10:]
             
             for msg in recent_messages:
                 timestamp = msg.timestamp.strftime('%H:%M')
-                if msg.role.value == "user":
+                role_value = msg.role.value if hasattr(msg.role, 'value') else str(msg.role)
+                
+                if role_value == "user":
                     history_parts.append(f"👤 <b>[{timestamp}] You:</b> {msg.content[:100]}{'...' if len(msg.content) > 100 else ''}")
-                elif msg.role.value == "assistant":
+                elif role_value == "assistant":
                     history_parts.append(f"🤖 <b>[{timestamp}] Me:</b> {msg.content[:100]}{'...' if len(msg.content) > 100 else ''}")
             
             history_message = "\n\n".join(history_parts)

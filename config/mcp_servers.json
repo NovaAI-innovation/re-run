@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "directory-context": {
+        "command": "node",
+        "args": [
+          "C:\\Local-MCP-Servers\\File-Control-MCP\\server.js"
+        ]
+      }
+  }
+}

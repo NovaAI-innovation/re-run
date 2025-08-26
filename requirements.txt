@@ -1,4 +1,4 @@
-pydantic-ai-slim[google]
+pydantic-ai-slim[google,mcp]
 pydantic-settings
 python-telegram-bot[all]
 python-dotenv

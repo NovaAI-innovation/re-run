@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 from enum import Enum
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class MessageRole(str, Enum):
@@ -15,19 +15,37 @@ class MessageRole(str, Enum):
 
 
 class ConversationMessage(BaseModel):
-    """Individual message in a conversation."""
+    """Individual message in a conversation with enhanced validation."""
     
     model_config = ConfigDict(
         json_encoders={
             datetime: lambda v: v.isoformat()
-        }
+        },
+        validate_assignment=True,  # Validate on assignment
+        use_enum_values=False     # Keep enum objects for consistency
     )
     
-    id: str = Field(..., description="Unique message identifier")
+    id: str = Field(..., description="Unique message identifier", min_length=1)
     role: MessageRole = Field(..., description="Role of the message sender")
-    content: str = Field(..., description="Message content")
+    content: str = Field(..., description="Message content", min_length=1, max_length=50000)
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Message timestamp")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional message metadata")
+    
+    @field_validator('content')
+    @classmethod
+    def validate_content(cls, v: str) -> str:
+        """Validate message content."""
+        if not v.strip():
+            raise ValueError("Message content cannot be empty or whitespace only")
+        return v.strip()
+    
+    @field_validator('timestamp')
+    @classmethod
+    def validate_timestamp(cls, v: datetime) -> datetime:
+        """Ensure timestamp is not in the future."""
+        if v > datetime.utcnow():
+            raise ValueError("Message timestamp cannot be in the future")
+        return v
 
 
 class ConversationSummary(BaseModel):
