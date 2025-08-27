@@ -8,13 +8,6 @@
         "/app/data/"
       ]
     },
-    "mcpadvisor": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@xiaohui-wang/mcpadvisor"
-      ]
-    },
       "perplexity-ask": {
         "command": "npx",
         "args": [
