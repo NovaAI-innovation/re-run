@@ -169,7 +169,13 @@ class AIAgent:
             
             # Initialize MCP client with server configs
             await self.mcp_client.initialize(server_configs)
-            logger.info(f"MCP client initialized with {len(server_configs)} servers")
+            
+            # Check if any servers were actually created
+            available_servers = self.mcp_client.get_toolsets()
+            if available_servers:
+                logger.info(f"MCP client initialized with {len(available_servers)} active servers")
+            else:
+                logger.warning("MCP client initialized but no servers are available - agent will run without MCP tools")
             
         except Exception as e:
             logger.error(f"Failed to initialize MCP client: {e}")
@@ -218,14 +224,24 @@ class AIAgent:
             )
             
             # Generate response using Pydantic AI with proper context management
-            if self.mcp_client and self.mcp_client.get_toolsets():
-                async with self.agent:
+            try:
+                if self.mcp_client and self.mcp_client.get_toolsets():
+                    logger.debug(f"Using MCP tools: {len(self.mcp_client.get_toolsets())} servers available")
+                    async with self.agent:
+                        result = await self.agent.run(
+                            context_prompt, 
+                            deps=deps, 
+                            usage_limits=usage_limits
+                        )
+                else:
+                    logger.debug("No MCP tools available, running without tools")
                     result = await self.agent.run(
                         context_prompt, 
-                        deps=deps, 
                         usage_limits=usage_limits
                     )
-            else:
+            except Exception as mcp_error:
+                logger.warning(f"MCP tool execution failed, falling back to basic response: {mcp_error}")
+                # Fallback to basic response without MCP tools
                 result = await self.agent.run(
                     context_prompt, 
                     usage_limits=usage_limits

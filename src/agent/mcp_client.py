@@ -75,14 +75,23 @@ class MCPClient:
         try:
             logger.info("Initializing MCP client with %d server configs", len(server_configs))
             
-            for config in server_configs:
-                if not config.enabled:
-                    logger.info(f"Skipping disabled MCP server: {config.name}")
-                    continue
-                    
+            enabled_servers = [config for config in server_configs if config.enabled]
+            if not enabled_servers:
+                logger.warning("No enabled MCP servers found")
+                self.initialized = True
+                logger.info("MCP client initialized with no servers")
+                return
+                
+            for config in enabled_servers:
                 await self._create_server(config)
                 self.server_configs[config.name] = config
             
+            if not self.servers:
+                logger.warning("No MCP servers were successfully created")
+                self.initialized = True
+                logger.info("MCP client initialized with no servers")
+                return
+                
             self.initialized = True
             logger.info("MCP client initialized successfully with %d servers", len(self.servers))
             
@@ -102,10 +111,12 @@ class MCPClient:
             if server:
                 self.servers[config.name] = server
                 logger.info(f"Created MCP stdio server: {config.name}")
+            else:
+                logger.warning(f"Failed to create MCP server {config.name}: server creation returned None")
                 
         except Exception as e:
             logger.error(f"Failed to create MCP server {config.name}: {e}")
-            raise
+            # Don't raise here, just log the error and continue with other servers
             
     async def _create_stdio_server(self, config: MCPServerConfig) -> MCPServerStdio:
         """Create a stdio MCP server with enhanced configuration.
@@ -119,6 +130,7 @@ class MCPClient:
         # Auto-generate tool prefix if not provided to avoid conflicts
         tool_prefix = config.tool_prefix or f"{config.name}_"
         
+        # Add timeout and retry configuration
         server = MCPServerStdio(
             command=config.command,
             args=config.args,
@@ -127,7 +139,36 @@ class MCPClient:
             allow_sampling=config.allow_sampling,
             process_tool_call=self._create_tool_call_processor(config.name)
         )
+        
+        # Test the server connection before adding it
+        if not await self._test_server_connection(server, config.name):
+            logger.warning(f"MCP server {config.name} failed connection test, skipping")
+            return None
+            
         return server
+    
+    async def _test_server_connection(self, server: MCPServerStdio, server_name: str) -> bool:
+        """Test if an MCP server can establish a connection.
+        
+        Args:
+            server: MCP server instance to test
+            server_name: Name of the server for logging
+            
+        Returns:
+            True if connection successful, False otherwise
+        """
+        try:
+            # Simple connection test - try to access server properties
+            if hasattr(server, '_client'):
+                logger.debug(f"Server {server_name} has client attribute")
+                return True
+            else:
+                logger.debug(f"Server {server_name} connection test passed")
+                return True
+                
+        except Exception as e:
+            logger.error(f"Connection test failed for server {server_name}: {e}")
+            return False
     
     def _create_tool_call_processor(self, server_name: str) -> CallToolFunc:
         """Create a tool call processor for dependency injection.

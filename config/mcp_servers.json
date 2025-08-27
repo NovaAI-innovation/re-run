@@ -6,27 +6,30 @@
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "/app/data/"
-      ]
+      ],
+      "enabled": false
     },
-      "perplexity-ask": {
-        "command": "npx",
-        "args": [
-          "-y",
-          "server-perplexity-ask"
-        ],
-        "env": {
-          "PERPLEXITY_API_KEY": "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"
-        }
+    "perplexity-ask": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "server-perplexity-ask"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "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"
       },
+      "enabled": false
+    },
     "brave-search": {
-        "command": "npx",
-        "args": [
-          "-y",
-          "@modelcontextprotocol/server-brave-search"
-        ],
-        "env": {
-          "BRAVE_API_KEY": "BSAuEoqY7gmCrRaCKgsjPuMxOiYALWJ"
-        }
-      }
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "BSAuEoqY7gmCrRaCKgsjPuMxOiYALWJ"
+      },
+      "enabled": false
+    }
   }
 }
