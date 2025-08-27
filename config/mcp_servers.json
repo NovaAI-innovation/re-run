@@ -1,10 +1,12 @@
 {
   "mcpServers": {
-    "directory-context": {
-        "command": "node",
-        "args": [
-          "C:\\Local-MCP-Servers\\File-Control-MCP\\server.js"
-        ]
-      }
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/app/data/"
+      ]
+    }
   }
 }

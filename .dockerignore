@@ -1,0 +1,116 @@
+# Include any files or directories that you don't want to be copied to your
+# container here (e.g., local build artifacts, temporary files, etc.).
+#
+# For more help, visit the .dockerignore file reference guide at
+# https://docs.docker.com/go/build-context-dockerignore/
+
+# Python specific
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+*.py[cod]
+*$py.class
+**/.Python
+**/build
+**/develop-eggs
+**/dist
+**/downloads
+**/eggs
+**/.eggs
+**/lib
+**/lib64
+**/parts
+**/sdist
+**/var
+**/wheels
+**/*.egg-info
+**/.installed.cfg
+**/*.egg
+**/MANIFEST
+
+# Virtual environments
+**/.venv
+**/venv/
+**/env/
+**/ENV/
+**/.env
+**/env.bak/
+**/venv.bak/
+
+# IDEs and editors
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+
+# Git
+**/.git
+**/.gitignore
+
+# Docker
+**/Dockerfile*
+**/docker-compose*
+**/compose.y*ml
+**/.dockerignore
+
+# Testing
+**/.pytest_cache
+**/.coverage
+**/htmlcov
+**/.tox
+**/.nox
+**/coverage.xml
+**/*.cover
+**/*.py,cover
+**/.hypothesis
+
+# Documentation
+**/README.md
+**/docs/
+**/*.md
+
+# Logs and databases (local development)
+**/*.log
+**/logs/
+**/data/conversations/
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# OS specific
+**/Thumbs.db
+**/.DS_Store
+
+# Temporary files
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.temp
+
+# Node modules (if any frontend components)
+**/node_modules
+**/npm-debug.log
+
+# Configuration files that shouldn't be in container
+**/example.env
+**/docker.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# CI/CD
+**/.github
+**/.gitlab-ci.yml
+**/Jenkinsfile
+
+# Backup files
+**/*.bak
+**/*.backup
+**/*.old
+
+# System files
+**/.cache
+**/.*cache
