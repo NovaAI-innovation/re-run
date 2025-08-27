@@ -4,6 +4,9 @@
 ARG PYTHON_VERSION=3.12
 FROM python:${PYTHON_VERSION}-slim AS base
 
+# Install uv and uvx by copying from official image (best practice)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Prevents Python from writing pyc files
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -11,7 +14,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering
 ENV PYTHONUNBUFFERED=1
 
-# Ensure Node.js and npm are in PATH for all users
+# Ensure Node.js, npm, uv, and uvx are in PATH for all users
 ENV PATH="/usr/local/bin:$PATH"
 
 # Set working directory
